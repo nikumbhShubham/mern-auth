@@ -11,7 +11,7 @@ export default function Signin() {
   // const [error, setError] = useState(false)
   // const [loading, setLoading] = useState(false)
 
-const {loading,error}= useSelector((state)=>state.user)
+  const { loading, error } = useSelector((state) => state.user)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -87,7 +87,7 @@ const {loading,error}= useSelector((state)=>state.user)
           <span className='text-blue-700'>Sign up</span>
         </NavLink>
       </div>
-      <p className='text-red-700 mt-5 flex gap-2 justify-center'>{error ? error.message || "something went wrong!!" :null}</p>
+      <p className='text-red-700 mt-5 flex gap-2 justify-center'>{error ? error.message || "something went wrong!!" : null}</p>
 
     </div>
   )
