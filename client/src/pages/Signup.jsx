@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { NavLink, json } from 'react-router-dom'
+import { NavLink, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 
 
@@ -8,6 +8,7 @@ export default function Signup() {
   const [formData, setFormData] = useState({})
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(false)
+const navigate=useNavigate()
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value })
@@ -34,7 +35,9 @@ export default function Signup() {
       setError(true)
       return;
     }
-   
+    
+    navigate('/')
+
    } catch (error) {
       setLoading(false)
      
