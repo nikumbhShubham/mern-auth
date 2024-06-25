@@ -34,3 +34,35 @@ export const signin = async (request, response, next) => {
     }
 }
 
+export const google = async (request, response, next) => {
+    try {
+        const { email, name, photo } = request.body;
+        const user = await User.findOne({ email });
+        const expiryDate = new Date(Date.now() + 3600000); // 1 hour
+
+        if (user) {
+            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+            const { password: hashedPassword, ...rest } = user._doc;
+            response.cookie('access_token', token, { httpOnly: true, expires: expiryDate })
+                .status(200)
+                .json(rest);
+        } else {
+            const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+            const hashPassword = bcryptjs.hashSync(generatedPassword, 10);
+            const newUser = new User({
+                username: name.split(" ").join("").toLowerCase() + Math.floor(Math.random() * 10000).toString(),
+                email,
+                password: hashPassword,
+                profilePicture: photo
+            });
+            await newUser.save();
+            const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+            const { password: hashedPassword, ...rest } = newUser._doc;
+            response.cookie('access_token', token, { httpOnly: true, expires: expiryDate })
+                .status(200)
+                .json(rest);
+        }
+    } catch (error) {
+        next(error);
+    }
+};

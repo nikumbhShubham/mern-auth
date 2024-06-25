@@ -17,9 +17,7 @@ mongoose.connect(process.env.MONGODB)
 const app = express()
 app.use(express.json())
 // app.use(urlencoded({extended:false}))
-app.listen(3000, () => {
-    console.log("Server is running on port 3000")
-})
+
 
 app.use('/api/user', userRoutes)
 app.use('/api/auth', authRoutes)
@@ -38,4 +36,6 @@ app.use((err, req, res, next) => {   //has to be in correct order ---> (err, req
     //     statusCode
     // })
 })
-
+app.listen(3000, () => {
+    console.log("Server is running on port 3000")
+})
