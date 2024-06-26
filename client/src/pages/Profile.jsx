@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import { app } from '../firebase';
-import {updateUserStart,updateUserSuccess,updateUserFailure} from '../redux/user/userSlice.js'
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure } from '../redux/user/userSlice.js'
 
 
 export default function Profile() {
@@ -14,7 +14,7 @@ export default function Profile() {
   const [updateSuccess, setUpdateSuccess] = useState(false)
 
 
-  const { currentUser,loading,error } = useSelector(state => state.user)
+  const { currentUser, loading, error } = useSelector(state => state.user)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function Profile() {
         body: JSON.stringify(formData)
       })
       const data = await res.json()
-      if (data.success===false) {
+      if (data.success === false) {
         dispatch(updateUserFailure())
         return;
       }
@@ -69,6 +69,25 @@ export default function Profile() {
     } catch (error) {
       dispatch(updateUserFailure(error))
     }
+  }
+
+  const handleDeleteAccount = async () => {
+    console.log(currentUser)
+    try {
+      dispatch(deleteUserStart())
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+      })
+      const data = await res.json()
+      if (data.success === false) {
+        dispatch(deleteUserFailure())
+        return;
+      }
+      dispatch(deleteUserSuccess(data))
+    } catch (error) {
+      dispatch(deleteUserFailure(error))
+    }
+
   }
 
 
@@ -106,16 +125,16 @@ export default function Profile() {
 
         <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90 disabled:opacity-80 '>
 
-         {loading?"Loading...":"Update"} 
-         
-          </button>
+          {loading ? "Loading..." : "Update"}
+
+        </button>
       </form>
       <div className='flex justify-between mt-5'>
-        <span className='text-red-700 cursor-pointer'>Delete Account</span>
+        <span onClick={handleDeleteAccount} className='text-red-700 cursor-pointer' >Delete Account</span>
         <span className='text-red-700 cursor-pointer'>Sign out</span>
       </div>
-      <p className='text-red-700 mt-5'>{error&& "something went wrong!"}</p>
-      <p className='text-green-700 mt-5'>{updateSuccess&& "User updated successfully!"}</p>
+      <p className='text-red-700 mt-5'>{error && "something went wrong!"}</p>
+      <p className='text-green-700 mt-5'>{updateSuccess && "User updated successfully!"}</p>
     </div>
   )
 }
