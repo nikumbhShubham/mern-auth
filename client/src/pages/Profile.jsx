@@ -12,7 +12,8 @@ export default function Profile() {
   const [imageError, setImageError] = useState(false)
   const [formData, setformData] = useState({})
   const [updateSuccess, setUpdateSuccess] = useState(false)
-
+  
+  console.log(formData)
 
   const { currentUser, loading, error } = useSelector(state => state.user)
   const dispatch = useDispatch()
